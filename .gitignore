@@ -37,3 +37,5 @@
 *.depend
 *.layout
 
+#cURL
+curl-7.40.0-devel-mingw32/
