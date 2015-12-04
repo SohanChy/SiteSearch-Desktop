@@ -6,6 +6,7 @@
 using namespace std;
 
 vector<string> getLinks(string page,string siteToSearch);
-string pageString();
+string pageString(char pageUrl[1000]);
+bool searchPageForKeyword(string page,string keyword);
 
 #endif // PROTOTYPES_H_INCLUDED
