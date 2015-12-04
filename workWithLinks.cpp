@@ -7,9 +7,9 @@ using namespace std;
 
 vector<string> getLinks(string page,string siteToSearch)
 {
-    const string aTagBegin("<a");
-    const string aTagEnd("\">");
-    const string hrefEquals("href=\"");
+    const string aTagBegin("<a ");
+    const string aTagEnd("\"");
+    const string hrefEquals(" href=\"");
 
     vector<string> links;
     size_t posBegin = 0;
@@ -29,15 +29,17 @@ vector<string> getLinks(string page,string siteToSearch)
             }
             else
             {
-                posBegin++;
+                posBegin = posBegin+5;
                 continue;
             }
 
         //cout<<"posBegin2:"<<posBegin<<"--"<<posEnd<<endl;
 
         posEnd    = page.find(aTagEnd,posBegin);
+
             string tmpUrlHolder = page.substr(posBegin,posEnd-posBegin);
-            if(tmpUrlHolder.find("http://")!= string::npos)
+
+            if(tmpUrlHolder.substr(0,7)== "http://")
             {
                 tmpUrlHolder = tmpUrlHolder.substr(7,tmpUrlHolder.length()-7);
                 if(tmpUrlHolder.find(siteToSearch) == string::npos)
@@ -46,6 +48,24 @@ vector<string> getLinks(string page,string siteToSearch)
                     continue;
                 }
             }
+            else if(tmpUrlHolder.substr(0,8)== "https://")
+            {
+                tmpUrlHolder = tmpUrlHolder.substr(8,tmpUrlHolder.length()-8);
+                if(tmpUrlHolder.find(siteToSearch) == string::npos)
+                {
+                    posBegin++;
+                    continue;
+                }
+            }
+            else if(tmpUrlHolder.substr(0,1)== "/")
+            {
+                tmpUrlHolder.insert(0,siteToSearch);
+            }
+            else
+            {
+                tmpUrlHolder.insert(0,siteToSearch+"/");
+            }
+
         links.push_back(tmpUrlHolder);
 
         posBegin = posEnd;
@@ -54,4 +74,14 @@ vector<string> getLinks(string page,string siteToSearch)
     while(page.find(aTagBegin,posBegin)!=string::npos);
 
     return links;
+}
+
+bool searchPageForKeyword(string page,string keyword)
+{
+    if(page.find(keyword))
+    {
+        return true;
+    }
+
+    return false;
 }
