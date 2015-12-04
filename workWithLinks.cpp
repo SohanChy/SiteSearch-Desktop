@@ -5,7 +5,7 @@
 
 using namespace std;
 
-vector<string> getLinks(string page,string siteToSearch)
+vector<string> getLinks(string *pageString,string siteToSearch)
 {
     const string aTagBegin("<a ");
     const string aTagEnd("\"");
@@ -14,15 +14,15 @@ vector<string> getLinks(string page,string siteToSearch)
     vector<string> links;
     size_t posBegin = 0;
     size_t posEnd = 0;
-    size_t found = page.find(aTagBegin);
+    size_t found = pageString->find(aTagBegin);
 
     do
     {
-        found     = page.find(aTagBegin,posBegin);
+        found     = pageString->find(aTagBegin,posBegin);
         posBegin  = found;
         //cout<<"posBegin1:"<<posBegin<<"--"<<posEnd<<endl;
 
-        found     = page.find(hrefEquals,posBegin);
+        found     = pageString->find(hrefEquals,posBegin);
         if(found!=string::npos)
             {
             posBegin  = found + hrefEquals.length();
@@ -35,9 +35,9 @@ vector<string> getLinks(string page,string siteToSearch)
 
         //cout<<"posBegin2:"<<posBegin<<"--"<<posEnd<<endl;
 
-        posEnd    = page.find(aTagEnd,posBegin);
+        posEnd    = pageString->find(aTagEnd,posBegin);
 
-            string tmpUrlHolder = page.substr(posBegin,posEnd-posBegin);
+            string tmpUrlHolder = pageString->substr(posBegin,posEnd-posBegin);
 
             if(tmpUrlHolder.substr(0,7)== "http://")
             {
@@ -63,22 +63,38 @@ vector<string> getLinks(string page,string siteToSearch)
             }
             else
             {
+                cout<<endl<<"I am in here "<<tmpUrlHolder<<endl;
                 tmpUrlHolder.insert(0,siteToSearch+"/");
             }
+
+
+
+        if(tmpUrlHolder[tmpUrlHolder.length()-4] == '.')
+        {
+            string extension = tmpUrlHolder.substr(tmpUrlHolder.length()-3,tmpUrlHolder.length());
+
+            if(extension!="htm" && extension!="php" && extension!="asp")
+            {
+                posBegin++;
+                continue;
+            }
+
+        }
+
 
         links.push_back(tmpUrlHolder);
 
         posBegin = posEnd;
 
     }
-    while(page.find(aTagBegin,posBegin)!=string::npos);
+    while(pageString->find(aTagBegin,posBegin)!=string::npos);
 
     return links;
 }
 
-bool searchPageForKeyword(string page,string keyword)
+bool searchPageStringForKeyword(string *pageString,string keyword)
 {
-    if(page.find(keyword))
+    if(pageString->find(keyword) != string::npos)
     {
         return true;
     }
