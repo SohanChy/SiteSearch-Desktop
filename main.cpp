@@ -5,16 +5,23 @@
 
 using namespace std;
 
-int main()
-{
-    string site="172.27.27.246";
+void printVectorString(vector<string> *vectorString) {
 
-    vector<string> siteLinks = getLinks(pageString(),site);
-
-    for(vector<string>::const_iterator i = siteLinks.begin(); i != siteLinks.end(); i++)
+    for(vector<string>::const_iterator i = vectorString->begin(); i != vectorString->end(); i++)
         {
         cout<<*i<<endl;
         }
+}
+
+int main()
+{
+    char siteUrl[1000]="google.com";
+
+    vector<string> siteLinks = getLinks(pageString(siteUrl),siteUrl);
+
+    printVectorString(&siteLinks);
+
+
 
     return 0;
 }
