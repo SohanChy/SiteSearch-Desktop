@@ -29,6 +29,8 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add library="curl-7.40.0-devel-mingw32\lib\libcurl.a" />
+					<Add library="curl-7.40.0-devel-mingw32\lib\libcurldll.a" />
 				</Linker>
 			</Target>
 		</Build>
