@@ -80,6 +80,9 @@ int main()
     }
 
 
-
+                cout<<"Type E and press Enter to exit"<<endl;
+                char x='b';
+                while(x!='E' && x!= 'e')
+                {cin>>x;}
     return 0;
 }
