@@ -16,29 +16,36 @@ static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *use
 }
 
 
-string pageString(char pageUrl[1000])
+string pageString(string *pageUrl)
 {
-    /*ifstream t("testpage.html");
-    string thisPage((istreambuf_iterator<char>(t)),istreambuf_iterator<char>());*/
+    cout<<"          ----------          "<<endl;
 
-  CURL *curl;
-  CURLcode res;
-  string readBuffer;
+    char * tmpThisSiteUrl = new char [(pageUrl->length())+1];
+    strcpy (tmpThisSiteUrl, pageUrl->c_str());
 
-  curl = curl_easy_init();
-  if(curl) {
-    curl_easy_setopt(curl, CURLOPT_URL, pageUrl);
+    CURL *curl;
+    CURLcode res;
+    string readBuffer;
+
+    curl = curl_easy_init();
+
+    if(curl)
+    {
+    curl_easy_setopt(curl, CURLOPT_URL, tmpThisSiteUrl);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
-    curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 3L);
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 3L);
+    curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 2L);
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 2L);
     res = curl_easy_perform(curl);
     curl_easy_cleanup(curl);
 
-    //cout << readBuffer << endl;
+    const char *curl_easy_strerror(CURLcode errornum);
+
+    cout<<readBuffer.substr(0,15)<<endl;
+    cout<<"          >>>>>>>>>>          "<<endl;
     return readBuffer;
-  }
+    }
   else return "failed to fetch site";
 
 }

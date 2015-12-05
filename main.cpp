@@ -8,72 +8,75 @@
 
 using namespace std;
 
-bool checkIfVisited(vector<string> *linkDatabase, string link)
-{
-        for(vector<string>::const_iterator i = linkDatabase->begin(); i != linkDatabase->end(); i++)
-        {
-            string tmpLink = *i;
-            if(tmpLink == link)
-                {
-                    return true;
-                }
-        }
-        return false;
-}
+
+
 
 void printVectorString(vector<string> *vectorString) {
 
+    cout<<"----printing vector string----"<<endl;
     for(vector<string>::const_iterator i = vectorString->begin(); i != vectorString->end(); i++)
         {
         cout<<*i<<endl;
         }
+    cout<<"----end of vector string----"<<endl;
 }
 
 int main()
 {
-    freopen("output.txt","w",stdout);
+    //freopen("output.txt","w",stdout);
 
-    char siteUrl[1000]="http://103.3.226.207";
-    string keyword = "Sohan";
+    cout<<"Please enter website address: (eg: www.cplusplus.com)"<<endl;
+    string siteUrl="";
+    getline(cin,siteUrl);
+    siteUrl = cleanUrl(siteUrl);
 
-    string siteAsString = pageString(siteUrl);
-    vector<string> siteLinks = getLinks(&siteAsString,siteUrl);
+    cout<<"Enter keyword to search: (eg: array)"<<endl;
+    string keyword = "";
+    getline(cin,keyword);
 
+    vector<string> visitedLinks;    //store visited links here
+    visitedLinks.push_back(siteUrl);
 
-    vector<string> visitedLinks;
+    string siteAsString = pageString(&siteUrl);
+    vector<string> linksToVisit = getLinks(&siteAsString,siteUrl,&visitedLinks);
 
-    printVectorString(&siteLinks);
+    //printVectorString(&linksToVisit);
 
+    while(linksToVisit.empty() != true)
+    {
+        cout<<"****Links To Visit: "<<linksToVisit.size()<<"****"<<endl;
+        //printVectorString(&linksToVisit);
+        cout<<"****VISITED LINKS: "<<visitedLinks.size()<<"****"<<endl;
+        //printVectorString(&visitedLinks);
 
-    for(vector<string>::const_iterator i = siteLinks.begin(); i != siteLinks.end(); i++)
+        if(checkIfVisited(&visitedLinks,linksToVisit.front()) != true)
         {
-            if(checkIfVisited(&visitedLinks, *i) == false)
-                {
-                char * tmpThisSiteUrl = new char [(i->length())+1];
-                strcpy (tmpThisSiteUrl, i->c_str());
-                cout<<"Fetching url "<<tmpThisSiteUrl<<" @@@"<<endl;
+            cout<<"####Visiting: "<<linksToVisit.front()<<"####"<<endl;
 
-                string tmpSiteHtml = pageString(tmpThisSiteUrl);
+            string tmpSiteHtml = pageString(&linksToVisit.front());
 
+            if(searchForKeyword(tmpSiteHtml,keyword))
+            {
+                cout<<"----- FOUND!!! -----"<<endl
+                <<"Url: "<<linksToVisit.front()<<endl;
+                break;
+            }
 
-                vector<string> thisPagesLinks = getLinks(&tmpSiteHtml,siteUrl);
-                visitedLinks.push_back(*i);
+            vector<string> tmpExtractedLinks = getLinks(&tmpSiteHtml,linksToVisit.front(),&linksToVisit);
 
-                cout<<"---------------------------------"<<endl;
-                printVectorString(&thisPagesLinks);
-                cout<<"---------------------------------"<<endl;
-                }
+            cout<<"****EXTRACTED LINKS: "<<tmpExtractedLinks.size()<<"****"<<endl;
+            //printVectorString(&tmpExtractedLinks);
+
+            visitedLinks.push_back(linksToVisit.front());
+            linksToVisit.erase(linksToVisit.begin());
+
+            linksToVisit.insert(linksToVisit.end(),tmpExtractedLinks.begin(),tmpExtractedLinks.end());
         }
+        else
+        {
+            linksToVisit.erase(linksToVisit.begin());
 
-
-
-    if(searchPageStringForKeyword(&siteAsString,keyword))
-    {
-        cout<<endl<<"FOUND"<<endl;
-    }
-    else
-    {
-        cout<<endl<<"NOT FOUND"<<endl;
+        }
     }
 
 

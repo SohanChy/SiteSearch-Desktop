@@ -8,9 +8,16 @@ using namespace std;
 
 
 
-vector<string> getLinks(string *pageString,string siteToSearch);
-string pageString(char pageUrl[1000]);
-bool searchPageStringForKeyword(string *pageString,string keyword);
+vector<string> getLinks(string *pageString,string siteToSearch,vector<string> *LinkDatabase);
+
+string pageString(string *pageUrl);
+
+string cleanUrl(string dirtyUrl);
+
+bool checkIfVisited(vector<string> *linkDatabase, string link);
+
+bool searchForKeyword(string &pageString,string &keyword);
+
 void printVectorString(vector<string> *vectorString);
 
 #endif // PROTOTYPES_H_INCLUDED
